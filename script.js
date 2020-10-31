@@ -7,19 +7,36 @@ if (localStorage.getItem('groceryList')) {
     createList();
 }
 
-addItemBtn.addEventListener('click', function() {
+$('input[type=checkbox]').change(handleCheckboxSelect);
+
+addItemBtn.addEventListener('click', function () {
     event.preventDefault();
 
     if ($('.add-item-input').val().trim() !== '') {
-        let groceryItem = $('.add-item-input').val().trim();
+        let groceryItem = {
+            name: $('.add-item-input').val().trim(),
+            checked: false
+        }
         groceryList.push(groceryItem);
         localStorage.setItem("groceryList", JSON.stringify(groceryList));
         $('.add-item-input').val('');
         createList();
+        $('input[type=checkbox]').change(handleCheckboxSelect);
     }
 });
 
-function createListItem(text, index) {
+function handleCheckboxSelect() {
+    let targetIndex = $(this).attr('data-value');
+
+    if ($(this).is(':checked')) {
+        groceryList[targetIndex].checked = true;
+    } else {
+        groceryList[targetIndex].checked = false;
+    }
+    localStorage.setItem("groceryList", JSON.stringify(groceryList));
+}
+
+function createListItem(text, index, checked) {
     let listItemEl = $('<div>').addClass('list-item row');
     let leftColEl = $('<div>').addClass('col-9 d-flex align-items-center justify-content-start');
     let checkBox = $('<input>').attr('type', 'checkbox');
@@ -28,6 +45,8 @@ function createListItem(text, index) {
     let deleteBtnEl = $('<div>').addClass('delete-btn').html('<i class="fas fa-trash"></i>');
     deleteBtnEl.click(handleDeleteBtnClick);
     deleteBtnEl.attr('data-value', index);
+    checkBox.attr('data-value', index);
+    checkBox.prop('checked', checked);
 
     $(leftColEl).append(checkBox, listItemText);
     $(rightColEl).append(deleteBtnEl);
@@ -38,7 +57,7 @@ function createListItem(text, index) {
 function createList() {
     $('.list-container').empty();
     groceryList.forEach(function (item, index) {
-        createListItem(item, index);
+        createListItem(item.name, index, item.checked);
     })
 }
 
