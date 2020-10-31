@@ -1,5 +1,3 @@
-let addItemBtn = document.querySelector('#add-item-btn');
-
 let groceryList = [];
 
 if (localStorage.getItem('groceryList')) {
@@ -9,7 +7,7 @@ if (localStorage.getItem('groceryList')) {
 
 $('input[type=checkbox]').change(handleCheckboxSelect);
 
-addItemBtn.addEventListener('click', function () {
+$('#add-item-btn').click(function () {
     event.preventDefault();
 
     if ($('.add-item-input').val().trim() !== '') {
@@ -23,7 +21,7 @@ addItemBtn.addEventListener('click', function () {
         createList();
         $('input[type=checkbox]').change(handleCheckboxSelect);
     }
-});
+})
 
 function handleCheckboxSelect() {
     let targetIndex = $(this).attr('data-value');
